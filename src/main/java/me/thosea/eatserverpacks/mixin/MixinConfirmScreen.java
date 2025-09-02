@@ -39,19 +39,23 @@ public abstract class MixinConfirmScreen extends Screen {
 	@Shadow
 	protected abstract void addButton(ButtonWidget button);
 
-	private boolean esp$isResourcePack;
+	@Unique
+    private boolean esp$isResourcePack;
 
 	@Inject(method = "<init>(Lit/unimi/dsi/fastutil/booleans/BooleanConsumer;Lnet/minecraft/text/Text;Lnet/minecraft/text/Text;Lnet/minecraft/text/Text;Lnet/minecraft/text/Text;)V", at = @At("TAIL"))
 	private void onInit(BooleanConsumer booleanConsumer, Text component, Text component2, Text component3, Text component4, CallbackInfo ci) {
 		esp$isResourcePack = ((Object) this) instanceof ConfirmServerResourcePackScreen;
 	}
 
-	private ButtonWidget esp$eatPackButton;
-	private ButtonWidget esp$grabPackButton;
+	@Unique
+    private ButtonWidget esp$eatPackButton;
+	@Unique
+    private ButtonWidget esp$grabPackButton;
 
 	@SuppressWarnings("UnreachableCode") // I don't know either
 	@Inject(method = "addButtons", at = @At("TAIL"))
 	private void onAddButtons(int y, CallbackInfo ci) {
+        if (client == null) return;
 		if(!esp$isResourcePack) return;
 
 		ClientPlayNetworkHandler network = MinecraftClient.getInstance().getNetworkHandler();
@@ -101,7 +105,8 @@ public abstract class MixinConfirmScreen extends Screen {
 		return ((ConfirmServerResourcePackScreen) (Object) this).packs;
 	}
 
-	private URI esp$uriOf(Pack pack) {
+	@Unique
+    private URI esp$uriOf(Pack pack) {
 		try {
 			return pack.url().toURI();
 		} catch(URISyntaxException e) {
@@ -112,6 +117,7 @@ public abstract class MixinConfirmScreen extends Screen {
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void onTick(CallbackInfo ci) {
 		if(!esp$isResourcePack) return;
+        if (esp$eatPackButton == null || esp$grabPackButton == null) return;
 
 		boolean isSneakPressed = false;
 
@@ -132,7 +138,9 @@ public abstract class MixinConfirmScreen extends Screen {
 		}
 	}
 
-	private void esp$eatServerPack() {
+	@Unique
+    private void esp$eatServerPack() {
+        if (client == null) return;
 		ClientPlayNetworkHandler network = client.getNetworkHandler();
 		if(network == null) return;
 

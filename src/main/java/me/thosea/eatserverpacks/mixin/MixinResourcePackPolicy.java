@@ -1,10 +1,7 @@
 package me.thosea.eatserverpacks.mixin;
 
 import net.minecraft.client.network.ServerInfo.ResourcePackPolicy;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.ArrayList;
@@ -19,9 +16,10 @@ public class MixinResourcePackPolicy {
 		esp$makeEatPackPolicy();
 	}
 
-	private static void esp$makeEatPackPolicy() {
+	@Unique
+    private static void esp$makeEatPackPolicy() {
 		List<ResourcePackPolicy> policies = new ArrayList<>(List.of(RESOURCE_PACK_POLICIES));
-		int id = policies.get(policies.size() - 1).ordinal() + 1;
+		int id = policies.getLast().ordinal() + 1;
 		ResourcePackPolicy policy = esp$makePolicy("esp$EAT_SERVER_PACK", id, "eatserverpack");
 		policies.add(policy);
 		RESOURCE_PACK_POLICIES = policies.toArray(new ResourcePackPolicy[0]);

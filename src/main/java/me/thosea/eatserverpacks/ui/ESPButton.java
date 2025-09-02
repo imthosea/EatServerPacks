@@ -27,6 +27,10 @@ public final class ESPButton extends ButtonWidget {
 		this.setTooltip(Tooltip.of(tooltip));
 	}
 
+    private boolean clicked(double mouseX, double mouseY) {
+        return this.active && this.visible && mouseX >= (double)this.getX() && mouseY >= (double)this.getY() && mouseX < (double)(this.getX() + this.getWidth()) && mouseY < (double)(this.getY() + this.getHeight());
+    }
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if(!active || !visible) return false;
