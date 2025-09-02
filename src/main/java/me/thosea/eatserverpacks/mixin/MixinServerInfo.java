@@ -1,5 +1,6 @@
 package me.thosea.eatserverpacks.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import me.thosea.eatserverpacks.EatServerPacks;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.network.ServerInfo.ResourcePackPolicy;
@@ -16,19 +17,17 @@ public class MixinServerInfo {
 	@Shadow private ResourcePackPolicy resourcePackPolicy;
 
 	@Inject(method = "toNbt",
-			locals = LocalCapture.CAPTURE_FAILHARD,
-			at = @At("TAIL"))
-	private void onSerialize(CallbackInfoReturnable<NbtCompound> cir, NbtCompound tag) {
+            at = @At("TAIL"))
+	private void onSerialize(CallbackInfoReturnable<NbtCompound> cir, @Local NbtCompound tag) {
 		if(resourcePackPolicy == EatServerPacks.PACK_POLICY) {
 			tag.putBoolean("eatserverpacks_eatpack", true);
 		}
 	}
 
 	@Inject(method = "fromNbt",
-			locals = LocalCapture.CAPTURE_FAILHARD,
-			at = @At("TAIL"))
+            at = @At("TAIL"))
 	private static void onDeserialize(NbtCompound root, CallbackInfoReturnable<ServerInfo> cir,
-	                                  ServerInfo serverInfo) {
+                                      @Local ServerInfo serverInfo) {
 		if(root.getBoolean("eatserverpacks_eatpack")) {
 			serverInfo.setResourcePackPolicy(EatServerPacks.PACK_POLICY);
 		}
